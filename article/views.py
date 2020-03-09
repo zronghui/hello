@@ -5,6 +5,7 @@ from django.shortcuts import render
 # Create your views here.
 
 def hello(request):
+    # 1/0
     return HttpResponse("hello world")
 
 
@@ -37,3 +38,7 @@ def staticTest(request):
 
 def error_404(request, exception):
     return render(request, 'error_404.html')
+
+
+def error_500(request):
+    return render(request, 'error_500.html')

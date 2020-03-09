@@ -19,7 +19,7 @@ from article.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('hello/', hello),
+    path('', hello),
     path('hello/<int:num>', hello_num),
     path('template', template),
     path('template2', template2),
@@ -27,3 +27,4 @@ urlpatterns = [
     path('staticTest', staticTest),
 ]
 handler404 = error_404
+handler500 = error_500
