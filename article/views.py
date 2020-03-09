@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 
@@ -42,3 +43,11 @@ def error_404(request, exception):
 
 def error_500(request):
     return render(request, 'error_500.html')
+
+
+def listing(request):
+    contact_list = list(range(100))
+    paginator = Paginator(contact_list, 2)  # Show 25 contacts per page.
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'list.html', context={'page_obj': page_obj})
