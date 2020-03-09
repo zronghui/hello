@@ -33,3 +33,7 @@ def template3(request):
 
 def staticTest(request):
     return render(request, 'staticTest.html')
+
+
+def error_404(request, exception):
+    return render(request, 'error_404.html')

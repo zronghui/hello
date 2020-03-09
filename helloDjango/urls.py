@@ -26,3 +26,4 @@ urlpatterns = [
     path('template3', template3),
     path('staticTest', staticTest),
 ]
+handler404 = error_404
