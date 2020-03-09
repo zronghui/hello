@@ -24,4 +24,5 @@ urlpatterns = [
     path('template', template),
     path('template2', template2),
     path('template3', template3),
+    path('staticTest', staticTest),
 ]

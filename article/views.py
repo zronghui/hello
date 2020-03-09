@@ -30,3 +30,6 @@ def template2(request):
 def template3(request):
     return render(request, '3.html')
 
+
+def staticTest(request):
+    return render(request, 'staticTest.html')
