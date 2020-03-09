@@ -6,7 +6,7 @@ from django.shortcuts import render
 # Create your views here.
 
 def hello(request):
-    # 1/0
+    1/0
     return HttpResponse("hello world")
 
 
