@@ -26,6 +26,7 @@ urlpatterns = [
     path('template3', template3),
     path('staticTest', staticTest),
     path('list', listing),
+    path('error', error),
 ]
 handler404 = error_404
 handler500 = error_500

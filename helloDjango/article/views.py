@@ -6,7 +6,6 @@ from django.shortcuts import render
 # Create your views here.
 
 def hello(request):
-    1/0
     return HttpResponse("hello world")
 
 
@@ -51,3 +50,7 @@ def listing(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'list.html', context={'page_obj': page_obj})
+
+
+def error(request):
+    1 / 0
