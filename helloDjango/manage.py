@@ -5,6 +5,14 @@ import sys
 
 
 def main():
+    logDir = os.path.join(os.path.dirname(__file__), 'log')
+    logFile = os.path.join(logDir, 'debug.log')
+    print(logFile)
+    if not os.path.exists(logDir):
+        os.mkdir(logDir)
+    if not os.path.exists(logFile):
+        os.system(f'touch {logFile}')
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helloDjango.settings')
     try:
         from django.core.management import execute_from_command_line
