@@ -45,9 +45,10 @@ NEWSPIDER_MODULE = 'helloScrapy.spiders'
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-# SPIDER_MIDDLEWARES = {
-#    'helloScrapy.middlewares.HelloscrapySpiderMiddleware': 543,
-# }
+SPIDER_MIDDLEWARES = {
+    # 'helloScrapy.middlewares.HelloscrapySpiderMiddleware': 543,
+    'helloScrapy.middlewares.ProxyMiddleware': 543,
+}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html

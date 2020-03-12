@@ -4,8 +4,20 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import logging
 
 from scrapy import signals
+
+from utils import get_random_proxy
+
+
+class ProxyMiddleware(object):
+    logger = logging.getLogger(__name__)
+
+    def process_exception(self, request, exception, spider):
+        self.logger.debug('Get Exception')
+        request.meta['proxy'] = get_random_proxy()
+        return request
 
 
 class HelloscrapySpiderMiddleware(object):
