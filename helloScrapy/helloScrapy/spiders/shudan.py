@@ -9,9 +9,14 @@ class ShudanSpider(scrapy.Spider):
     allowed_domains = ['shudan.vip', 'pan.shudan.vip']
     start_urls = [f'https://www.shudan.vip/page/{i}' for i in range(1, 16873)]
     start_urls.extend(f'https://pan.shudan.vip/page/{i}' for i in range(1, 749))
+    custom_settings = {
+        'ITEM_PIPELINES': {'helloScrapy.pipelines.ShudanPipeline': 300},
+    }
 
     def parse(self, response):
-        item = BookItem()
-        item['book_url'] = response.css('.block-title a::attr(href)').extract_first()
-        item['book_name'] = response.css('.block-title a::text').extract_first()
-        yield item
+        books = response.css('.block-title a')
+        for book in books:
+            item = BookItem()
+            item['book_url'] = book.css('::attr(href)').extract_first()
+            item['book_name'] = book.css('::text').extract_first()
+            yield item
