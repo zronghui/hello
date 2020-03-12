@@ -25,19 +25,3 @@ class BookItem(scrapy.Item):
     book_downl_url = scrapy.Field()
     book_source = scrapy.Field()
     book_intro = scrapy.Field()
-
-    # book_zip_pswd = scrapy.Field()
-    # book_chinese = scrapy.Field()
-    # book_id = scrapy.Field()
-
-
-class DoubanItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    book_name = scrapy.Field()
-    book_author = scrapy.Field()
-    book_score = scrapy.Field()
-    book_intro = scrapy.Field()
-    book_url = scrapy.Field()
-    book_type = scrapy.Field()
-    book_id = scrapy.Field()

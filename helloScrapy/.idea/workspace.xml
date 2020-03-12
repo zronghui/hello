@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4a1e670-a7cf-4668-8391-577c9cddbe7c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helloScrapy/items.py" beforeDir="false" afterPath="$PROJECT_DIR$/helloScrapy/items.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helloScrapy/spiders/douban.py" beforeDir="false" afterPath="$PROJECT_DIR$/helloScrapy/spiders/douban.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -12,7 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="DarkyenusTimeTracker">
-    <option name="totalTimeSeconds" value="19411" />
+    <option name="totalTimeSeconds" value="21611" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -77,7 +77,7 @@
       <option name="presentableId" value="Default" />
       <updated>1583889687195</updated>
       <workItem from="1583889688548" duration="16299000" />
-      <workItem from="1583996875106" duration="10793000" />
+      <workItem from="1583996875106" duration="13806000" />
     </task>
     <servers />
   </component>
