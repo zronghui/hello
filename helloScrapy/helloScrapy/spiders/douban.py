@@ -11,8 +11,15 @@ class DoubanSpider(CrawlSpider):
     custom_settings = {
         'ITEM_PIPELINES': {'helloScrapy.pipelines.DoubanPipeline': 300},
         'DEFAULT_REQUEST_HEADERS': {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Cache-Control': 'max-age=0',
+            'Connection': 'keep-alive',
+            'Host': 'music.douban.com',
+            'Upgrade-Insecure-Requests': ' 1',
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
-        }
+        },
     }
     # start_urls = ['https://book.douban.com/subject/34894380']
 
@@ -22,7 +29,6 @@ class DoubanSpider(CrawlSpider):
                                 deny=r'https://book\.douban\.com/subject/\d+/buylinks'), callback="douban_parse"))
 
     def douban_parse(self, response):
-        # def parse(self, response):
         item = BookItem()
         item['book_url'] = response.url
         item['book_name'] = response.xpath("//h1/span/text()").extract_first()
@@ -30,6 +36,6 @@ class DoubanSpider(CrawlSpider):
         book_score = response.xpath("//strong[@class='ll rating_num ']/text()").extract_first()
         if book_score:
             item['book_score'] = book_score.strip()
-        item['book_desc'] = '\n'.join(response.css('#link-report p::text').extract())
+        # item['book_desc'] = '\n'.join(response.css('#link-report p::text').extract())
         item['book_image'] = response.css('#mainpic img::attr(src)').extract_first()
         return item
