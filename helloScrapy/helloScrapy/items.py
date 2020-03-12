@@ -14,8 +14,10 @@ class BookItem(scrapy.Item):
     book_name = scrapy.Field()
     book_url = scrapy.Field()
     book_desc = scrapy.Field()
-
+    book_score = scrapy.Field()
     book_author = scrapy.Field()
+    book_image = scrapy.Field()
+
     book_type = scrapy.Field()
     book_format = scrapy.Field()
     book_time = scrapy.Field()

@@ -16,7 +16,7 @@ class HelloscrapyPipeline(object):
         """
         初始化操作，在爬虫运行过程中只执行一次
         """
-        self.file = open('books.json', 'w', encoding='utf-8')
+        self.file = open('books.json', 'a', encoding='utf-8')
 
     def process_item(self, item, spider):
         # 现将item数据转为字典类型，再将其保存为json文件

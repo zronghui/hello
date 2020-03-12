@@ -1,11 +1,34 @@
 # -*- coding: utf-8 -*-
-import scrapy
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
+
+from helloScrapy.items import BookItem
 
 
-class DoubanSpider(scrapy.Spider):
-    name = 'douban'
-    allowed_domains = ['douban.com']
-    start_urls = ['http://douban.com/']
+class DoubanSpider(CrawlSpider):
+    name = "douban"
+    allowed_domains = ["douban.com"]
+    custom_settings = {
+        'DEFAULT_REQUEST_HEADERS': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
+        }
+    }
+    # start_urls = ['https://book.douban.com/subject/34894380']
 
-    def parse(self, response):
-        pass
+    start_urls = ['https://book.douban.com/tag/']
+    rules = (Rule(LinkExtractor(allow=r"/tag/"), follow=True),
+             Rule(LinkExtractor(allow=r"https://book\.douban\.com/subject/\d+",
+                                deny=r'https://book\.douban\.com/subject/\d+/buylinks'), callback="douban_parse"))
+
+    def douban_parse(self, response):
+        # def parse(self, response):
+        item = BookItem()
+        item['book_url'] = response.url
+        item['book_name'] = response.xpath("//h1/span/text()").extract_first()
+        item['book_author'] = response.css('#info a::text').extract_first()
+        book_score = response.xpath("//strong[@class='ll rating_num ']/text()").extract_first()
+        if book_score:
+            item['book_score'] = book_score.strip()
+        item['book_desc'] = '\n'.join(response.css('#link-report p::text').extract())
+        item['book_image'] = response.css('#mainpic img::attr(src)').extract_first()
+        return item

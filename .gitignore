@@ -231,3 +231,5 @@ Temporary Items
 .apdisk
 
 *.json
+/helloScrapy/jobs/
+
