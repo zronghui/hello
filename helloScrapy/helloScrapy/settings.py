@@ -93,3 +93,17 @@ DOWNLOADER_MIDDLEWARES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
+
+# 爬虫优化
+# 增加并发
+CONCURRENT_REQUESTS = 100
+# 降低log级别
+# LOG_LEVEL = 'INFO'
+# 禁止cookies
+COOKIES_ENABLED = False
+# 禁止重试
+RETRY_ENABLED = False
+# 减小下载超时,有些网站就是慢
+# DOWNLOAD_TIMEOUT = 15
+# 禁止重定向
+REDIRECT_ENABLED = False
