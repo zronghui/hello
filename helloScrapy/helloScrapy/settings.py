@@ -52,12 +52,12 @@ NEWSPIDER_MODULE = 'helloScrapy.spiders'
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-    # 'helloScrapy.middlewares.HelloscrapyDownloaderMiddleware': 543,
-    'scrapy.downloadermiddlewares.retry.RetryMiddleware': 90,
-    'helloScrapy.middlewares.RandomProxy': 100,
-    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
-}
+# DOWNLOADER_MIDDLEWARES = {
+#     # 'helloScrapy.middlewares.HelloscrapyDownloaderMiddleware': 543,
+#     'scrapy.downloadermiddlewares.retry.RetryMiddleware': 90,
+#     'helloScrapy.middlewares.RandomProxy': 100,
+#     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 110,
+# }
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -95,8 +95,6 @@ DOWNLOADER_MIDDLEWARES = {
 # USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36'
 
 # 爬虫优化
-# 增加并发
-CONCURRENT_REQUESTS = 100
 # 降低log级别
 # LOG_LEVEL = 'INFO'
 # 禁止cookies
@@ -107,3 +105,11 @@ RETRY_ENABLED = False
 # DOWNLOAD_TIMEOUT = 15
 # 禁止重定向
 REDIRECT_ENABLED = False
+
+# 增加并发
+DOWNLOAD_DELAY = 0
+CONCURRENT_REQUESTS = 100
+CONCURRENT_REQUESTS_PER_DOMAIN = 100
+CONCURRENT_REQUESTS_PER_IP = 100
+
+# LOG_LEVEL = "WARNING"

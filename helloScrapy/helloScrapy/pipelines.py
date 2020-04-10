@@ -50,3 +50,48 @@ class ShudanPipeline(object):
 
     def close_spider(self, spider):
         self.file.close()
+
+
+class XiangZhanPipeline(object):
+
+    def __init__(self):
+        self.file = open('xiangzhan.json', 'a', encoding='utf-8')
+
+    def process_item(self, item, spider):
+        text = json.dumps(dict(item), ensure_ascii=False) + '\n'
+        self.file.write(text)
+        # 会将item打印到屏幕上，方便观察
+        return item
+
+    def close_spider(self, spider):
+        self.file.close()
+
+
+class AxcsPipeline(object):
+
+    def __init__(self):
+        self.file = open('axcs.json', 'a', encoding='utf-8')
+
+    def process_item(self, item, spider):
+        text = json.dumps(dict(item), ensure_ascii=False) + '\n'
+        self.file.write(text)
+        # 会将item打印到屏幕上，方便观察
+        return item
+
+    def close_spider(self, spider):
+        self.file.close()
+
+
+class Java1234Pipeline(object):
+
+    def __init__(self):
+        self.file = open('java1234.json', 'a', encoding='utf-8')
+
+    def process_item(self, item, spider):
+        text = json.dumps(dict(item), ensure_ascii=False) + '\n'
+        self.file.write(text)
+        # 会将item打印到屏幕上，方便观察
+        return item
+
+    def close_spider(self, spider):
+        self.file.close()

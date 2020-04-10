@@ -7,8 +7,8 @@ from helloScrapy.items import BookItem
 class ShudanSpider(scrapy.Spider):
     name = 'shudan'
     allowed_domains = ['shudan.vip', 'pan.shudan.vip']
-    start_urls = [f'https://www.shudan.vip/page/{i}' for i in range(1, 16873)]
-    start_urls.extend(f'https://pan.shudan.vip/page/{i}' for i in range(1, 749))
+    start_urls = [f'https://pan.shudan.vip/page/{i}' for i in range(1, 749)]
+#     start_urls.extend(f'https://pan.shudan.vip/page/{i}' for i in range(1, 749))
     custom_settings = {
         'ITEM_PIPELINES': {'helloScrapy.pipelines.ShudanPipeline': 300},
     }
