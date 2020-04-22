@@ -232,4 +232,5 @@ Temporary Items
 
 *.json
 /helloScrapy/jobs/
+.idea
 
