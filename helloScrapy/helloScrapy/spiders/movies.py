@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import random
+
 import scrapy
 from icecream import ic
 
@@ -16,6 +18,11 @@ class MoviesSpider(scrapy.Spider):
           ['dianying', 'lianxuju', 'zongyi', 'dongman']
           ],
         *[f'https://www.zhenbuka.com/vodtype/{i}' for i in range(1, 5)],
+        *[f'https://app.movie/index.php/vod/type/id/{i}/page/1.html' for i in range(1, 5)],
+        *[f'https://app.movie/index.php/vod/type/id/1/page/{i}.html' for i in random.sample(range(2, 1298), 6)],
+        *[f'https://app.movie/index.php/vod/type/id/2/page/{i}.html' for i in random.sample(range(2, 562), 3)],
+        *[f'https://app.movie/index.php/vod/type/id/3/page/{i}.html' for i in random.sample(range(2, 119), 1)],
+        *[f'https://app.movie/index.php/vod/type/id/4/page/{i}.html' for i in random.sample(range(2, 229), 1)],
     ]
     ic(start_urls)
 
@@ -41,6 +48,10 @@ class MoviesSpider(scrapy.Spider):
         'www.zhenbuka.com': {
             'urlsXpath': "//h4[@class='title text-overflow']/a/@href",
             'namesXpath': "//h4[@class='title text-overflow']/a/text()"
+        },
+        'app.movie': {
+            'urlsXpath': "//h4[@class='stui-vodlist__title']/a/@href",
+            'namesXpath': "//h4[@class='stui-vodlist__title']/a/text()"
         },
     }
 
