@@ -8,8 +8,14 @@ import 'package:flutter_daydart/flutter_daydart.dart';
 //     mapThingList(json.decode(s))
 
 Thing mapToThing(Map<String, dynamic> m) {
-  Thing thing = Thing(m['name'], m['type'], int.parse(m['duration']));
-  thing.startTime = DayDart.fromString(m['startTime']);
+  Thing thing = Thing(
+      m['name'],
+      m['type'],
+      int.parse(m['duration']),
+      m['isRoutine'].toLowerCase() == 'true',
+      DayDart.fromString(m['startTime']));
+  // thing.isRoutine = m['isRoutine'];
+  // thing.startTime = DayDart.fromString(m['startTime']);
   thing.endTime = DayDart.fromString(m['endTime']);
   return thing;
 }
@@ -25,15 +31,17 @@ class Thing {
   String name;
   String type;
   int duration;
+  bool isRoutine;
   DayDart startTime;
   DayDart endTime;
 
-  Thing(this.name, this.type, this.duration);
+  Thing(this.name, this.type, this.duration, this.isRoutine, this.startTime);
 
   Thing.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         type = json['type'],
         duration = int.parse(json['duration']),
+        isRoutine = json['isRoutine'] ?? false,
         startTime = DayDart.fromString(json['startTime']),
         endTime = DayDart.fromString(json['endTime']);
 
@@ -41,6 +49,7 @@ class Thing {
         'name': name,
         'type': type,
         'duration': duration.toString(),
+        'isRoutine': isRoutine.toString(),
         'startTime': startTime.toString(),
         'endTime': endTime.toString()
       };

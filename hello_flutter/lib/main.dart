@@ -42,7 +42,7 @@ getThings() async {
   print('-----get things start-----');
   var things = await readJSON();
   items = things;
-  print('get things '+items.toString());
+  print('get things ' + items.toString());
   // SharedPreferences prefs = await SharedPreferences.getInstance();
   // String s = prefs.getString('thingList');
   // print(s);
@@ -296,8 +296,8 @@ class MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute(builder: (context) => SelectionScreen()),
     );
     if (thing != null) {
-      thing.startTime = DayDart();
-      thing.endTime = DayDart().add(10, Units.MIN);
+      // thing.startTime = DayDart();
+      thing.endTime = DayDart().add(thing.duration, Units.MIN);
       items.insert(items.length, thing);
       updateItems(items.length - 1);
       mySetState();

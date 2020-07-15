@@ -1,5 +1,6 @@
 import 'package:awesome_button/awesome_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_daydart/flutter_daydart.dart';
 
 import 'thingModel.dart';
 
@@ -8,6 +9,7 @@ import 'thingModel.dart';
 var controller1 = TextEditingController();
 
 var controller3 = TextEditingController();
+var isRoutine = false;
 
 class MyTextField extends StatefulWidget {
   final String labelText;
@@ -29,8 +31,35 @@ class MyTextField extends StatefulWidget {
   _MyTextFieldState createState() => _MyTextFieldState();
 }
 
-// var controller2 = TextEditingController();
-class SelectionScreen extends StatelessWidget {
+class SelectionScreen extends StatefulWidget {
+  SelectionScreen({Key key}) : super(key: key);
+
+  @override
+  _SelectionScreenState createState() => _SelectionScreenState();
+}
+
+class _SelectionScreenState extends State<SelectionScreen> {
+  TimeOfDay _time = TimeOfDay.now();
+  DayDart _dayDart = DayDart();
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay picked =
+        await showTimePicker(context: context, initialTime: _time);
+    if (picked != null && picked != _time)
+      print("data selectied :${_time.toString()}");
+    setState(() {
+      setTime(picked);
+    });
+    if (picked == null) setTime(TimeOfDay.now());
+  }
+
+  void setTime(TimeOfDay picked) {
+    _time = picked;
+    final now = new DateTime.now();
+    this._dayDart =
+        DayDart.fromInt(now.year, now.month, now.day, _time.hour, _time.minute);
+  }
+
   @override
   Widget build(BuildContext context) {
     var addButtonOnPressed = () {
@@ -42,7 +71,9 @@ class SelectionScreen extends StatelessWidget {
             controller1.text,
             //  controller2.text,
             '',
-            int.parse(controller3.text));
+            int.parse(controller3.text),
+            isRoutine,
+            this._dayDart ?? DayDart());
         controller1.clear();
         controller3.clear();
         Navigator.pop(context, thing);
@@ -85,6 +116,33 @@ class SelectionScreen extends StatelessWidget {
         helperText: '分钟',
         textType: TextInputType.number,
       ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text('每天重复'),
+          Switch(
+              value: isRoutine,
+              onChanged: (bool value) => {setState(() => isRoutine = value)}),
+        ],
+      ),
+      new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text('开始时间  '),
+          // todo: 美化为 awesomeButton
+          RaisedButton(
+            child: Text('${_time.toString().substring(10, 15)}'),
+            onPressed: () {
+              _selectTime(context);
+            },
+          ),
+        ],
+      ),
+
       new Container(
         child: awesomeButton,
         margin: const EdgeInsets.all(10.0),
@@ -108,6 +166,7 @@ class SelectionScreen extends StatelessWidget {
   }
 }
 
+// var controller2 = TextEditingController();
 class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
