@@ -1,117 +1,372 @@
+import 'dart:async';
+
+import 'package:dragable_flutter_list/dragable_flutter_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_daydart/flutter_daydart.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'addRoute.dart';
+import 'cardItem.dart';
+import 'file.dart';
+import 'thingModel.dart';
+import 'util.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(new TestApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+final Color color1 = Color(0xff54B7FF);
+
+final Color color2 = Color(0xff4D7DE8);
+
+final Color color3 = Color(0xff6067FF);
+
+List<Thing> items = [];
+
+isBusy() {
+  if (items == null) {
+    return false;
   }
+  for (var i = 0; i < items.length; i++) {
+    var before = DayDart().isBefore(items[i].startTime);
+    var after = DayDart().isAfter(items[i].endTime);
+    var doing = !before && !after;
+    if (doing) {
+      return true;
+    }
+  }
+  return false;
+}
+
+getThings() async {
+  print('-----get things start-----');
+  var things = await readJSON();
+  items = things;
+  print('get things '+items.toString());
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // String s = prefs.getString('thingList');
+  // print(s);
+  // print(json.decode(s));
+  // var t = mapToThinglist(json.decode(s)['things']);
+  // if(t!=null){
+  //   items = t;
+  // }
+  print('-----get things end-----');
+}
+
+saveThings() async {
+  print('-----save things start-----');
+  ThingList thingList = ThingList(things: items);
+  await writeJSON(thingList);
+
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // prefs.setString('thingList', json.encode(thingList));
+  // print(json.encode(thingList));
+  print('-----save things end-----');
+}
+
+updateItems(int index, [DayDart d]) async {
+  DayDart referenceTime;
+  if (d == null) {
+    referenceTime = DayDart();
+  } else {
+    print('-----last modified time-----\n' + d.toString());
+    referenceTime = d;
+  }
+  for (var i = index; i < items.length; i++) {
+    if (d != null && items[0].endTime.isBefore(referenceTime)) {
+      continue;
+    }
+    if (i == 0) {
+      // 是列表第一个元素
+      items[0].startTime = DayDart();
+      items[0].endTime = items[0].startTime.add(items[0].duration, Units.MIN);
+    } else if (items[i - 1].endTime.isBefore(referenceTime)) {
+      // 如果前一个已经完成，开始时间为当前时间
+      items[i].startTime = DayDart();
+      items[i].endTime = items[i].startTime.add(items[i].duration, Units.MIN);
+    } else {
+      items[i].startTime = items[i - 1]
+          .endTime
+          .add((items[i - 1].duration * 60 / 5).floor(), Units.S);
+      items[i].endTime = items[i].startTime.add(items[i].duration, Units.MIN);
+    }
+  }
+  await saveThings();
 }
 
 class MyHomePage extends StatefulWidget {
+  final String title;
   MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => new MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+class MyHomePageState extends State<MyHomePage> {
+  mySetState() {
+    if (this.mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    print('-----build-----');
+    print(items);
+    return new Scaffold(
+      backgroundColor: Colors.white,
+      appBar: new AppBar(
+        title: new Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'zronghui have pushed the button this many times:',
+      body: Column(
+        children: <Widget>[
+          _buildHeader(),
+          // SizedBox(height: 40.0),
+          Flexible(
+            child: new DragAndDropList(
+              items.length,
+              itemBuilder: _buildItem,
+              onDragFinish: (before, after) {
+                print('on drag finish $before $after');
+                Thing data = items[before];
+                items.removeAt(before);
+                items.insert(after, data);
+                if (before != after) {
+                  updateItems(before < after ? before : after);
+                }
+              },
+              canDrag: (index) => true,
+              canBeDraggedTo: (one, two) => true,
+              dragElevation: 8.0,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+          ),
+          // new PouringHourglass()
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () async {
+          await _navigateAndDisplaySelection(context);
+        },
+        tooltip: 'Toggle Opacity',
         child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
+  }
+
+  initItems() async {
+    await getThings();
+    mySetState();
+    await updateItems(0, DayDart.fromDateTime(thingFile.lastModifiedSync()));
+  }
+
+  @override
+  void initState() {
+    print('-----init start-----');
+    super.initState();
+    requestStoragePermission();
+    initItems();
+    print('-----init end-----');
+  }
+
+  Container _buildHeader() {
+    return Container(
+      height: 130,
+      width: double.infinity,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            bottom: 0,
+            left: -100,
+            top: -150,
+            child: Container(
+              width: 250,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(colors: [color1, color2]),
+                  boxShadow: [
+                    BoxShadow(
+                        color: color2,
+                        offset: Offset(4.0, 4.0),
+                        blurRadius: 10.0)
+                  ]),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(colors: [color3, color2]),
+                  boxShadow: [
+                    BoxShadow(
+                        color: color3,
+                        offset: Offset(1.0, 1.0),
+                        blurRadius: 4.0)
+                  ]),
+            ),
+          ),
+          Positioned(
+            top: 50,
+            left: 85,
+            child: Container(
+              width: 25,
+              height: 25,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(colors: [color3, color2]),
+                  boxShadow: [
+                    BoxShadow(
+                        color: color3,
+                        offset: Offset(1.0, 1.0),
+                        blurRadius: 4.0)
+                  ]),
+            ),
+          ),
+          new PouringHourglass(),
+          Container(
+            margin: const EdgeInsets.only(top: 10, left: 5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Text(
+                //   "Himanshu",
+                //   style: TextStyle(
+                //       color: Colors.white,
+                //       fontSize: 28.0,
+                //       fontWeight: FontWeight.w700),
+                // ),
+                // SizedBox(height: 10.0),
+                // Text(
+                //   "2 remaining tasks",
+                //   style: TextStyle(color: Colors.white, fontSize: 18.0),
+                // )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItem(BuildContext context, int index) {
+    return Dismissible(
+        // 必须是string, 用途：区分不同item
+        key: Key(UniqueKey().toString()),
+        direction: DismissDirection.startToEnd,
+        crossAxisEndOffset: 0.1,
+        movementDuration: const Duration(milliseconds: 200),
+        // 滑动过程中的背景图标和颜色
+        background: DecoratedBox(decoration: BoxDecoration(color: Colors.red)),
+        // secondaryBackground: DecoratedBox(decoration: BoxDecoration(color: Colors.grey[600])),
+        // DismissBg(),
+        // 确认移除，弹出对话框
+        confirmDismiss: (direction) async {
+          var isDismissed = showDialog<bool>(
+              context: context,
+              builder: (context) {
+                return new Alert();
+              });
+          return await isDismissed;
+        },
+        // 移除
+        onDismissed: (direction) {
+          print(items.length);
+          items.removeAt(index);
+          updateItems(index);
+          print(items.length);
+          mySetState();
+        },
+        // 包裹的子对象
+        child: CardItem(
+          thing: items[index],
+          onTap: () {
+            mySetState();
+          },
+        ));
+  }
+
+  _navigateAndDisplaySelection(BuildContext context) async {
+    // 获取下个页面返回的thing对象
+    var thing = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SelectionScreen()),
+    );
+    if (thing != null) {
+      thing.startTime = DayDart();
+      thing.endTime = DayDart().add(10, Units.MIN);
+      items.insert(items.length, thing);
+      updateItems(items.length - 1);
+      mySetState();
+    }
+  }
+}
+
+class PouringHourglass extends StatefulWidget {
+  const PouringHourglass({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _PouringHourglassState createState() => _PouringHourglassState();
+}
+
+class TestApp extends StatelessWidget {
+  TestApp({Key key});
+
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      theme: ThemeData(
+          inputDecorationTheme: InputDecorationTheme(
+        labelStyle: TextStyle(color: Colors.grey), //定义label字体样式
+        hintStyle: TextStyle(color: Colors.grey, fontSize: 14.0), //定义提示文本样式
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.lightBlue)),
+        enabledBorder:
+            UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+      )),
+      title: '今日事今日毕',
+      home: new MyHomePage(
+        title: '今日事今日毕',
+        key: key,
+      ),
+    );
+  }
+}
+
+class _PouringHourglassState extends State<PouringHourglass> {
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 50,
+      right: 50,
+      child: SpinKitPouringHourglass(
+        color: isBusy() ? Colors.lightBlueAccent : Colors.blueGrey[100],
+        // color: Colors.blueGrey,
+        size: 50,
+      ),
+    );
+    // Container(
+    //   margin: new EdgeInsets.fromLTRB(0, 20, 0, 30),
+    //   child: SpinKitPouringHourglass(
+    //     color: isBusy() ? Colors.lightBlueAccent : Colors.blueGrey[100],
+    //     // color: Colors.blueGrey,
+    //     size: 40,
+    //   ),
+    // );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    new Timer.periodic(Duration(seconds: 1), (Timer t) {
+      if (this.mounted) {
+        setState(() {});
+      }
+    });
   }
 }
